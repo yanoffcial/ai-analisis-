@@ -1,0 +1,2333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional AI Stock Analytics Platform</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            /* Warna Gold Premium */
+            --primary-gold: #FFD700;
+            --gold-light: #FFED4E;
+            --gold-dark: #D4AF37;
+            --gold-orange: #FFA500;
+            --gold-amber: #FFBF00;
+            --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF8C00 100%);
+            --gold-gradient-light: linear-gradient(135deg, #FFED4E 0%, #FFD700 50%, #FFBF00 100%);
+            
+            /* Warna Background Gelap Premium */
+            --dark-bg: #0A0A0A;
+            --dark-card: #141414;
+            --dark-border: #2A2A2A;
+            --darker-bg: #050505;
+            
+            /* Warna Teks */
+            --text-primary: #FFFFFF;
+            --text-secondary: #E0E0E0;
+            --text-muted: #B0B0B0;
+            
+            /* Shadow Effects */
+            --shadow-gold: 0 0 40px rgba(255, 215, 0, 0.3);
+            --shadow-gold-soft: 0 5px 25px rgba(255, 215, 0, 0.2);
+            --shadow-dark: 0 15px 40px rgba(0, 0, 0, 0.7);
+            --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Animated Gold Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 165, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+            animation: bgPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes bgPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Gold Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            animation: floatGold 10s infinite linear;
+            box-shadow: 0 0 8px var(--primary-gold);
+        }
+
+        @keyframes floatGold {
+            0% { 
+                transform: translateY(100vh) translateX(0) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translateY(-100px) translateX(30px) rotate(360deg); 
+                opacity: 0; 
+            }
+        }
+
+        /* Login Container - Premium Full Screen */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            z-index: 2;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 50%, var(--darker-bg) 100%);
+            padding: 20px;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-bg) 100%);
+            padding: 50px 45px;
+            border-radius: 25px;
+            box-shadow: 
+                var(--shadow-dark),
+                var(--shadow-gold-soft);
+            width: 100%;
+            max-width: 450px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gold-gradient);
+            animation: shimmerGold 3s infinite linear;
+        }
+
+        @keyframes shimmerGold {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .welcome-header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .welcome-header h1 {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-header p {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.6;
+            max-width: 380px;
+            margin: 0 auto;
+        }
+
+        .trader-features {
+            background: rgba(255, 215, 0, 0.06);
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .trader-features h3 {
+            color: var(--primary-gold);
+            font-size: 18px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .feature-list {
+            list-style: none;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-list li:hover {
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .feature-list li::before {
+            content: '✦';
+            color: var(--primary-gold);
+            font-weight: bold;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 215, 0, 0.12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+
+        .form-group:focus-within label {
+            color: var(--primary-gold);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--dark-border);
+            border-radius: 12px;
+            background: rgba(45, 45, 45, 0.8);
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            background: rgba(45, 45, 45, 0.95);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .form-group input:focus + .input-icon {
+            color: var(--primary-gold);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--gold-gradient);
+            border: none;
+            border-radius: 12px;
+            color: var(--dark-bg);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .login-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+            z-index: -1;
+        }
+
+        .login-btn:hover::before {
+            left: 100%;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .market-status {
+            background: rgba(255, 215, 0, 0.06);
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+            position: relative;
+            z-index: 1;
+        }
+
+        .market-status h4 {
+            color: var(--primary-gold);
+            font-size: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .market-ticker {
+            display: flex;
+            justify-content: space-around;
+            font-size: 12px;
+        }
+
+        .ticker-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ticker-label {
+            color: var(--text-secondary);
+            font-size: 10px;
+        }
+
+        .ticker-value {
+            color: var(--primary-gold);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Main Container - Premium Layout */
+        .main-container {
+            display: none;
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 50%, var(--darker-bg) 100%);
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(10, 10, 10, 0.98);
+            padding: 20px 0;
+            box-shadow: 
+                0 6px 25px rgba(0, 0, 0, 0.6),
+                0 1px 0 rgba(255, 215, 0, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(25px);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--gold-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: -0.5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-display {
+            color: var(--text-primary);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .user-level {
+            background: var(--gold-gradient);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--dark-bg);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: var(--shadow-gold);
+        }
+
+        .nav-menu {
+            background: rgba(10, 10, 10, 0.95);
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+            position: sticky;
+            top: 70px;
+            z-index: 999;
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-gold) transparent;
+        }
+
+        .nav-content::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+        }
+
+        .nav-content::-webkit-scrollbar-thumb {
+            background: var(--primary-gold);
+            border-radius: 2px;
+        }
+
+        .nav-item {
+            padding: 14px 20px;
+            cursor: pointer;
+            border-radius: 14px;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            position: relative;
+            border: 1px solid transparent;
+            font-size: 13px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--primary-gold);
+            border-color: rgba(255, 215, 0, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .nav-item.active {
+            background: var(--gold-gradient);
+            color: var(--dark-bg);
+            border-color: var(--primary-gold);
+            box-shadow: var(--shadow-gold);
+            font-weight: 700;
+        }
+
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background: var(--gold-gradient);
+            border-radius: 2px;
+        }
+
+        .content-area {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .section {
+            display: none;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .card {
+            background: linear-gradient(135deg, var(--dark-card) 0%, var(--dark-bg) 100%);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 35px;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 215, 0, 0.1);
+            box-shadow: 
+                0 15px 35px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 215, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                0 20px 40px rgba(0, 0, 0, 0.5),
+                var(--shadow-gold-soft),
+                inset 0 1px 0 rgba(255, 215, 0, 0.1);
+        }
+
+        .card h3 {
+            color: var(--primary-gold);
+            margin-bottom: 20px;
+            font-size: 22px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .card h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background: var(--gold-gradient);
+            border-radius: 2px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+
+        .input-group:focus-within label {
+            color: var(--primary-gold);
+        }
+
+        .input-group input, .input-group textarea, .input-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--dark-border);
+            border-radius: 12px;
+            background: rgba(45, 45, 45, 0.6);
+            color: var(--text-primary);
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus, .input-group textarea:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--primary-gold);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+            background: rgba(45, 45, 45, 0.8);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gold-gradient);
+            color: var(--dark-bg);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 215, 0, 0.15);
+            border-color: var(--primary-gold);
+            transform: translateY(-1px);
+        }
+
+        /* Enhanced Photo Analysis - Compact Gold Theme */
+        .photo-analysis-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .photo-upload-section, .photo-guide-section {
+            background: rgba(45, 45, 45, 0.6);
+            border-radius: 18px;
+            padding: 25px;
+            border: 1px solid var(--dark-border);
+            transition: all 0.3s ease;
+        }
+
+        .photo-upload-section:hover, .photo-guide-section:hover {
+            border-color: var(--primary-gold);
+            box-shadow: var(--shadow-gold-soft);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--dark-border);
+            border-radius: 15px;
+            padding: 35px 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: rgba(45, 45, 45, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .upload-area:hover::before {
+            left: 100%;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.05);
+            transform: scale(1.01);
+        }
+
+        .upload-area.has-file {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.08);
+            box-shadow: var(--shadow-gold-soft);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover .upload-icon {
+            color: var(--primary-gold);
+            transform: scale(1.05);
+        }
+
+        .sample-photos {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .sample-photo {
+            aspect-ratio: 16/9;
+            background: rgba(45, 45, 45, 0.8);
+            border-radius: 10px;
+            border: 1px solid var(--dark-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .sample-photo:hover {
+            border-color: var(--primary-gold);
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold-soft);
+        }
+
+        .sample-photo i {
+            font-size: 24px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .sample-photo:hover i {
+            color: var(--primary-gold);
+        }
+
+        .sample-photo span {
+            color: var(--text-secondary);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .analysis-methodology {
+            background: rgba(255, 215, 0, 0.06);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .methodology-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .step-card {
+            background: rgba(45, 45, 45, 0.9);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--dark-border);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .step-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .step-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-gold-soft);
+            border-color: var(--primary-gold);
+        }
+
+        .step-number {
+            width: 45px;
+            height: 45px;
+            background: var(--gold-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-bg);
+            font-weight: bold;
+            margin: 0 auto 15px;
+            font-size: 18px;
+            box-shadow: var(--shadow-gold-soft);
+        }
+
+        .step-title {
+            color: var(--primary-gold);
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .analysis-preview {
+            background: rgba(45, 45, 45, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analysis-preview.show {
+            display: block;
+            animation: slideInUp 0.5s ease;
+        }
+
+        @keyframes slideInUp {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.15);
+        }
+
+        .preview-title {
+            color: var(--primary-gold);
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .confidence-badge {
+            background: var(--gold-gradient);
+            color: var(--dark-bg);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: var(--shadow-gold-soft);
+        }
+
+        .api-key-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .api-key-item {
+            background: rgba(45, 45, 45, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--dark-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .api-key-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .api-key-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .api-key-item:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-gold-soft);
+            border-color: var(--primary-gold);
+        }
+
+        .analysis-result {
+            background: rgba(45, 45, 45, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 25px;
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .analysis-result::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gold-gradient);
+            border-radius: 15px 15px 0 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+
+        .loading i {
+            font-size: 48px;
+            animation: spin 1s linear infinite;
+            color: var(--primary-gold);
+            margin-bottom: 15px;
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(45, 45, 45, 0.6);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--dark-border);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 18px 22px;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            font-size: 13px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .notification.error {
+            background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .notification.info {
+            background: linear-gradient(135deg, #FFA500 0%, #FFD700 100%);
+            box-shadow: 0 8px 20px rgba(255, 165, 0, 0.3);
+        }
+
+        /* Stock Data Grid - Compact Gold */
+        .stock-data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .stock-data-item {
+            background: rgba(45, 45, 45, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--dark-border);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stock-data-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gold-gradient);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .stock-data-item:hover::before {
+            transform: scaleX(1);
+        }
+
+        .stock-data-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-gold-soft);
+            border-color: var(--primary-gold);
+        }
+
+        .stock-data-item .label {
+            color: var(--text-secondary);
+            font-size: 11px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stock-data-item .value {
+            color: var(--primary-gold);
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        /* Responsive Design - Prevent Overflow */
+        @media (max-width: 768px) {
+            .login-box {
+                width: 95%;
+                padding: 35px 25px;
+            }
+
+            .welcome-header h1 {
+                font-size: 26px;
+            }
+
+            .photo-analysis-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .methodology-steps {
+                grid-template-columns: 1fr;
+            }
+
+            .sample-photos {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-content {
+                padding: 0 15px;
+            }
+
+            .content-area {
+                padding: 0 15px;
+            }
+
+            .card {
+                padding: 25px;
+            }
+
+            .header-content {
+                padding: 0 15px;
+            }
+
+            .user-display {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .welcome-header h1 {
+                font-size: 24px;
+            }
+
+            .nav-item {
+                padding: 12px 16px;
+                font-size: 12px;
+            }
+
+            .btn {
+                padding: 12px 24px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Gold Background -->
+    <div class="bg-animation"></div>
+    <div class="particles" id="particles"></div>
+
+    <!-- Login Section -->
+    <div class="login-container" id="loginContainer">
+        <div class="login-box">
+            <div class="welcome-header">
+                <h1><i class="fas fa-crown"></i> GOLD AI TRADER</h1>
+                <p>Platform analisis saham AI premium dengan sentuhan emas. Didesain untuk trader profesional yang mengutamakan presisi dan kecepatan.</p>
+            </div>
+
+            <div class="trader-features">
+                <h3><i class="fas fa-robot"></i> Fitur AI Premium</h3>
+                <ul class="feature-list">
+                    <li>Analisis multi-dimensional dengan AI canggih</li>
+                    <li>Upload foto untuk analisis instan</li>
+                    <li>Auto-save API key - tidak perlu input berulang</li>
+                    <li>Konsultasi 24/7 dengan AI emas</li>
+                    <li>Rekomendasi real-time berbasis data</li>
+                    <li>Sistem memory yang belajar pattern Anda</li>
+                </ul>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Username / Trader ID</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" required placeholder="Masukkan username">
+                        <i class="fas fa-user input-icon"></i>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" required placeholder="Masukkan password">
+                        <i class="fas fa-lock input-icon"></i>
+                    </div>
+                </div>
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-unlock"></i> MASUK
+                </button>
+            </form>
+
+            <div class="market-status">
+                <h4><i class="fas fa-chart-line"></i> Market Live</h4>
+                <div class="market-ticker">
+                    <div class="ticker-item">
+                        <span class="ticker-label">IDX</span>
+                        <span class="ticker-value">+1.2%</span>
+                    </div>
+                    <div class="ticker-item">
+                        <span class="ticker-label">NYSE</span>
+                        <span class="ticker-value">+0.8%</span>
+                    </div>
+                    <div class="ticker-item">
+                        <span class="ticker-label">NASDAQ</span>
+                        <span class="ticker-value">+1.5%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div class="main-container" id="mainContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-brain"></i>
+                    GOLD AI ANALYTICS
+                </div>
+                <div class="user-info">
+                    <span class="user-display" id="userDisplay">User</span>
+                    <span class="user-level" id="userLevel">Basic</span>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Exit
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <nav class="nav-menu">
+            <div class="nav-content">
+                <div class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                </div>
+                <div class="nav-item" onclick="showSection('analysis')">
+                    <i class="fas fa-chart-bar"></i> Analysis
+                </div>
+                <div class="nav-item" onclick="showSection('photo-analysis')">
+                    <i class="fas fa-camera"></i> Photo AI
+                </div>
+                <div class="nav-item" onclick="showSection('consultation')">
+                    <i class="fas fa-comments"></i> AI Chat
+                </div>
+                <div class="nav-item" onclick="showSection('api-keys')">
+                    <i class="fas fa-key"></i> API Keys
+                </div>
+                <div class="nav-item" onclick="showSection('recommendations')">
+                    <i class="fas fa-star"></i> Signals
+                </div>
+            </div>
+        </nav>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Dashboard Section -->
+            <div class="section active" id="dashboard">
+                <div class="card">
+                    <h3><i class="fas fa-crown"></i> Gold Dashboard</h3>
+                    <p>Welcome to premium gold AI analytics dashboard. Navigate through exclusive tools using the menu above.</p>
+                    
+                    <div class="stock-data-grid">
+                        <div class="stock-data-item">
+                            <div class="label">Total Analysis</div>
+                            <div class="value" id="totalAnalysis">0</div>
+                        </div>
+                        <div class="stock-data-item">
+                            <div class="label">AI Consultations</div>
+                            <div class="value" id="totalConsultation">0</div>
+                        </div>
+                        <div class="stock-data-item">
+                            <div class="label">API Keys</div>
+                            <div class="value" id="totalApiKeys">0</div>
+                        </div>
+                        <div class="stock-data-item">
+                            <div class="label">Active Signals</div>
+                            <div class="value" id="activeRecommendations">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stock Analysis Section -->
+            <div class="section" id="analysis">
+                <div class="card">
+                    <h3><i class="fas fa-chart-bar"></i> Gold Standard Analysis</h3>
+                    <div class="input-group">
+                        <label for="stockSymbol">Stock Symbol</label>
+                        <input type="text" id="stockSymbol" placeholder="e.g., BBCA, TLKM, UNVR">
+                    </div>
+                    <div class="input-group">
+                        <label for="analysisType">Analysis Type</label>
+                        <select id="analysisType">
+                            <option value="fundamental">Fundamental Analysis</option>
+                            <option value="technical">Technical Analysis</option>
+                            <option value="both">Combined Analysis</option>
+                            <option value="risk">Risk Assessment</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="analyzeStock()">
+                        <i class="fas fa-search"></i> Analyze
+                    </button>
+                    <div id="analysisResult"></div>
+                </div>
+            </div>
+
+            <!-- Photo Analysis Section -->
+            <div class="section" id="photo-analysis">
+                <div class="card">
+                    <h3><i class="fas fa-camera"></i> Golden Photo AI</h3>
+                    
+                    <div class="photo-analysis-container">
+                        <div class="photo-upload-section">
+                            <h4 style="color: var(--primary-gold); margin-bottom: 20px;">
+                                <i class="fas fa-upload"></i> Upload Target
+                            </h4>
+                            
+                            <div class="upload-area" id="uploadArea" onclick="document.getElementById('photoUpload').click()">
+                                <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                <h5 style="color: var(--text-primary); margin-bottom: 10px;">Click to Upload</h5>
+                                <p style="color: var(--text-secondary); font-size: 13px;">Chart, Reports, News Screenshots</p>
+                                <div id="fileInfo" style="margin-top: 15px; color: var(--primary-gold); font-size: 12px; display: none;"></div>
+                            </div>
+
+                            <div class="input-group" style="margin-top: 20px;">
+                                <label for="photoAnalysisType">Analysis Type</label>
+                                <select id="photoAnalysisType">
+                                    <option value="chart">Chart Pattern</option>
+                                    <option value="financial">Financial Report</option>
+                                    <option value="news">News Article</option>
+                                    <option value="general">Market Data</option>
+                                </select>
+                            </div>
+
+                            <button class="btn btn-primary" onclick="analyzePhoto()" style="width: 100%; margin-top: 20px;">
+                                <i class="fas fa-eye"></i> AI Analyze
+                            </button>
+                        </div>
+
+                        <div class="photo-guide-section">
+                            <h4 style="color: var(--primary-gold); margin-bottom: 20px;">
+                                <i class="fas fa-lightbulb"></i> Guidelines
+                            </h4>
+                            
+                            <div class="sample-photos">
+                                <div class="sample-photo" onclick="showSampleAnalysis('chart')">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>Chart</span>
+                                </div>
+                                <div class="sample-photo" onclick="showSampleAnalysis('financial')">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <span>Report</span>
+                                </div>
+                                <div class="sample-photo" onclick="showSampleAnalysis('news')">
+                                    <i class="fas fa-newspaper"></i>
+                                    <span>News</span>
+                                </div>
+                                <div class="sample-photo" onclick="showSampleAnalysis('general')">
+                                    <i class="fas fa-chart-pie"></i>
+                                    <span>Data</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 20px; padding: 15px; background: rgba(255, 215, 0, 0.06); border-radius: 10px; border: 1px solid rgba(255, 215, 0, 0.15);">
+                                <h5 style="color: var(--primary-gold); margin-bottom: 10px;">Tips:</h5>
+                                <ul style="color: var(--text-secondary); font-size: 12px; list-style: none;">
+                                    <li>• High resolution photos</li>
+                                    <li>• Clear text visibility</li>
+                                    <li>• Avoid shadows/glare</li>
+                                    <li>• Focus on key areas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-methodology">
+                        <h4 style="color: var(--primary-gold); margin-bottom: 15px;">
+                            <i class="fas fa-cogs"></i> AI Process
+                        </h4>
+                        
+                        <div class="methodology-steps">
+                            <div class="step-card">
+                                <div class="step-number">1</div>
+                                <div class="step-title">Scan</div>
+                                <div class="step-description">AI scans and identifies image type</div>
+                            </div>
+                            <div class="step-card">
+                                <div class="step-number">2</div>
+                                <div class="step-title">Extract</div>
+                                <div class="step-description">Extract key data and information</div>
+                            </div>
+                            <div class="step-card">
+                                <div class="step-number">3</div>
+                                <div class="step-title">Analyze</div>
+                                <div class="step-description">Analyze patterns and trends</div>
+                            </div>
+                            <div class="step-card">
+                                <div class="step-number">4</div>
+                                <div class="step-title">Report</div>
+                                <div class="step-description">Generate insights and signals</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analysis-preview" id="analysisPreview">
+                        <div class="preview-header">
+                            <div class="preview-title">
+                                <i class="fas fa-chart-area"></i> Preview
+                            </div>
+                            <div class="confidence-badge" id="confidenceBadge">95% Confidence</div>
+                        </div>
+                        <div id="previewContent"></div>
+                    </div>
+
+                    <div id="photoResult"></div>
+                </div>
+            </div>
+
+            <!-- AI Consultation Section -->
+            <div class="section" id="consultation">
+                <div class="card">
+                    <h3><i class="fas fa-comments"></i> Gold AI Assistant</h3>
+                    <div class="chat-container">
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="chat-message ai">
+                                <strong>Gold AI:</strong> Halo! Saya asisten AI premium dengan sentuhan emas. Tanya apa saja tentang saham, strategi, atau analisis pasar.
+                            </div>
+                        </div>
+                        <div class="chat-input">
+                            <input type="text" id="chatInput" placeholder="Tanya tentang saham, strategi, atau analisis..." onkeypress="handleChatKeypress(event)">
+                            <button class="btn btn-primary" onclick="sendMessage()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Keys Section - Auto Save Feature -->
+            <div class="section" id="api-keys">
+                <div class="card">
+                    <h3><i class="fas fa-key"></i> API Key Management</h3>
+                    <p>API keys otomatis tersimpan di browser Anda. Tidak perlu input berulang!</p>
+                    
+                    <div class="api-key-container">
+                        <div class="api-key-item">
+                            <h4><i class="fab fa-openai"></i> OpenAI GPT-4</h4>
+                            <div class="input-group">
+                                <input type="password" id="openaiKey" placeholder="Auto-saved API Key">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('openai')">Save & Auto-Save</button>
+                        </div>
+                        
+                        <div class="api-key-item">
+                            <h4><i class="fas fa-brain"></i> Google Gemini Pro</h4>
+                            <div class="input-group">
+                                <input type="password" id="geminiKey" placeholder="Auto-saved API Key">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('gemini')">Save & Auto-Save</button>
+                        </div>
+                        
+                        <div class="api-key-item">
+                            <h4><i class="fas fa-rocket"></i> Grok AI</h4>
+                            <div class="input-group">
+                                <input type="password" id="grokKey" placeholder="Auto-saved API Key">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('grok')">Save & Auto-Save</button>
+                        </div>
+                        
+                        <div class="api-key-item">
+                            <h4><i class="fas fa-search"></i> DeepSeek V3</h4>
+                            <div class="input-group">
+                                <input type="password" id="deepseekKey" placeholder="Auto-saved API Key">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('deepseek')">Save & Auto-Save</button>
+                        </div>
+                        
+                        <div class="api-key-item">
+                            <h4><i class="fas fa-moon"></i> Kimi AI</h4>
+                            <div class="input-group">
+                                <input type="password" id="kimiKey" placeholder="Auto-saved API Key">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('kimi')">Save & Auto-Save</button>
+                        </div>
+                        
+                        <div class="api-key-item">
+                            <h4><i class="fas fa-plus"></i> Custom API</h4>
+                            <div class="input-group">
+                                <input type="text" id="customApiName" placeholder="API Service Name">
+                                <input type="password" id="customApiKey" placeholder="Auto-saved API Key" style="margin-top: 10px;">
+                            </div>
+                            <button class="btn btn-secondary" onclick="saveApiKey('custom')">Save & Auto-Save</button>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary" onclick="testAllApiKeys()">
+                        <i class="fas fa-check-double"></i> Test All APIs
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommendations Section -->
+            <div class="section" id="recommendations">
+                <div class="card">
+                    <h3><i class="fas fa-star"></i> Trading Signals</h3>
+                    <div class="input-group">
+                        <label for="recommendationType">Signal Type</label>
+                        <select id="recommendationType">
+                            <option value="daily">Daily Signals</option>
+                            <option value="weekly">Weekly Outlook</option>
+                            <option value="monthly">Monthly Investment</option>
+                            <option value="swing">Swing Signals</option>
+                            <option value="longterm">Long-term</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>
+                            <input type="checkbox" id="notificationToggle"> Enable Notifications
+                        </label>
+                    </div>
+                    <button class="btn btn-primary" onclick="getRecommendations()">
+                        <i class="fas fa-chart-line"></i> Generate Signals
+                    </button>
+                    <div id="recommendationResult"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Create gold particles
+        function createGoldParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Global variables
+        let currentUser = null;
+        let userLevel = 'basic';
+        let chatHistory = [];
+        let uploadedPhoto = null;
+        let apiKeys = {};
+        let analysisCount = 0;
+        let consultationCount = 0;
+
+        // Initialize gold particles
+        createGoldParticles();
+
+        // Login system
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Check credentials
+            if (username === 'YAN' && password === '030910') {
+                loginSuccess('GOLD MASTER', 'premium');
+            } else if (username === 'user' && password === '123') {
+                loginSuccess('GOLD TRADER', 'basic');
+            } else {
+                showNotification('Username atau password salah!', 'error');
+            }
+        });
+
+        function loginSuccess(username, level) {
+            currentUser = username;
+            userLevel = level;
+            
+            document.getElementById('loginContainer').style.display = 'none';
+            document.getElementById('mainContainer').style.display = 'block';
+            document.getElementById('userDisplay').textContent = username;
+            document.getElementById('userLevel').textContent = level === 'premium' ? 'GOLD MASTER' : 'GOLD TRADER';
+            
+            // Load saved data including API keys
+            loadUserData();
+            loadSavedApiKeys();
+            
+            showNotification(`Welcome to Gold Hub, ${username}!`, 'success');
+        }
+
+        function logout() {
+            currentUser = null;
+            userLevel = 'basic';
+            document.getElementById('loginContainer').style.display = 'flex';
+            document.getElementById('mainContainer').style.display = 'none';
+            document.getElementById('loginForm').reset();
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.classList.add('active');
+        }
+
+        // Stock analysis
+        function analyzeStock() {
+            const symbol = document.getElementById('stockSymbol').value.toUpperCase();
+            const analysisType = document.getElementById('analysisType').value;
+            
+            if (!symbol) {
+                showNotification('Please enter a stock symbol!', 'error');
+                return;
+            }
+            
+            const resultDiv = document.getElementById('analysisResult');
+            resultDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Analyzing...<br><small>AI processing data</small></div>';
+            
+            setTimeout(() => {
+                const analysis = generateStockAnalysis(symbol, analysisType);
+                resultDiv.innerHTML = `
+                    <div class="analysis-result">
+                        <h4><i class="fas fa-chart-bar"></i> Gold Analysis - ${symbol}</h4>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Type:</strong> ${getAnalysisTypeName(analysisType)} | 
+                            <strong>Confidence:</strong> ${analysis.confidence}%
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Summary:</strong><br>
+                            ${analysis.summary}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Signal:</strong><br>
+                            <span style="color: ${analysis.recommendationColor}; font-weight: bold; font-size: 16px;">
+                                ${analysis.recommendation}
+                            </span>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Targets:</strong><br>
+                            ${analysis.targetPrice}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Analysis:</strong><br>
+                            ${analysis.detailedAnalysis}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Risks:</strong><br>
+                            ${analysis.risks}
+                        </div>
+                    </div>
+                `;
+                
+                analysisCount++;
+                updateDashboardStats();
+                saveUserData();
+            }, 2500);
+        }
+
+        function generateStockAnalysis(symbol, type) {
+            const analyses = {
+                fundamental: {
+                    confidence: 88,
+                    summary: `${symbol} menunjukkan fundamental kuat dengan pertumbuhan revenue konsisten di atas 15%. Margin profitability membaik dan posisi kas solid.`,
+                    recommendation: 'STRONG BUY - Fundamental mendukung pertumbuhan jangka panjang',
+                    recommendationColor: '#10b981',
+                    targetPrice: 'Target: Rp 1,450 (25% upside) | Support: Rp 1,200 | Stop: Rp 1,180',
+                    detailedAnalysis: 'EPS growth 18% YoY dengan ROE 22% di atas industry average. Debt-to-equity 0.25x sehat dan free cash flow positive 8 kuartal berturut-turut.',
+                    risks: 'Risiko perlambatan ekonomi makro dan fluktuasi mata uang asing namun diversifikasi produk membantu mengurangi risiko.'
+                },
+                technical: {
+                    confidence: 85,
+                    summary: `Chart ${symbol} menunjukkan tren bullish kuat dengan pola ascending channel. Volume menunjukkan accumulation dan momentum positif.`,
+                    recommendation: 'BUY - Technical setup bullish dengan multiple confirmation',
+                    recommendationColor: '#10b981',
+                    targetPrice: 'Entry: Rp 1,320-1,340 | Target: Rp 1,480 (10%) | Stop: Rp 1,280',
+                    detailedAnalysis: 'Price di atas semua MA (20, 50, 200) dengan golden cross. RSI 62 menunjukkan momentum sehat. MACD positive dengan histogram membesar.',
+                    risks: 'Risiko menembus support channel di Rp 1,280 dengan volume tinggi. False breakout risk relatif rendah.'
+                },
+                both: {
+                    confidence: 92,
+                    summary: `Kombinasi fundamental kuat dan technical bullish ${symbol} menciptakan setup menarik. Fundamental mendukung tren teknikal.`,
+                    recommendation: 'STRONG BUY - Perfect alignment fundamental dan technical',
+                    recommendationColor: '#10b981',
+                    targetPrice: 'Akumulasi: Rp 1,300-1,350 | Target: Rp 1,500 (20%) | Stop: Rp 1,250',
+                    detailedAnalysis: 'Sinergi sempurna antara fundamental strength dan technical momentum. Semua indikator berada dalam kondisi optimal.',
+                    risks: 'Risiko terbatas dengan diversification yang baik. Monitor terhadap perubahan fundamental negatif.'
+                },
+                risk: {
+                    confidence: 80,
+                    summary: `Analisis risiko ${symbol} menunjukkan profil menengah-tinggi dengan beberapa faktor yang perlu diwaspadai namun manageable.`,
+                    recommendation: 'CAUTIOUS BUY - Manage position size dan tight stop',
+                    recommendationColor: '#f59e0b',
+                    targetPrice: 'Position: 50% normal size | Target: Rp 1,380 | Stop: Rp 1,260 (5% risk)',
+                    detailedAnalysis: 'Beta 1.3x lebih volatile dari pasar. Eksposur terhadap risiko regulasi dan sensitivitas terhadap siklus ekonomi.',
+                    risks: 'Risiko utama: perubahan kebijakan regulasi, fluktuasi mata uang asing, ketergantungan pada beberapa produk utama.'
+                }
+            };
+            
+            return analyses[type];
+        }
+
+        function getAnalysisTypeName(type) {
+            const names = {
+                fundamental: 'Fundamental Analysis',
+                technical: 'Technical Analysis',
+                both: 'Combined Analysis',
+                risk: 'Risk Assessment'
+            };
+            return names[type];
+        }
+
+        // Enhanced photo analysis
+        function handlePhotoUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                uploadedPhoto = file;
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInfo = document.getElementById('fileInfo');
+                
+                uploadArea.classList.add('has-file');
+                fileInfo.style.display = 'block';
+                fileInfo.innerHTML = `
+                    <i class="fas fa-check-circle"></i> ${file.name}<br>
+                    <small>${(file.size/1024/1024).toFixed(1)} MB</small>
+                `;
+                
+                showNotification('Photo uploaded!', 'success');
+                
+                // Show preview
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    showPhotoPreview(e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showPhotoPreview(imageSrc) {
+            const preview = document.getElementById('analysisPreview');
+            const content = document.getElementById('previewContent');
+            const badge = document.getElementById('confidenceBadge');
+            
+            content.innerHTML = `
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <img src="${imageSrc}" style="max-width: 100%; max-height: 250px; border-radius: 10px; border: 2px solid rgba(255, 215, 0, 0.3);">
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                    <div style="background: rgba(255, 215, 0, 0.08); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: var(--primary-gold); font-size: 11px;">Type</div>
+                        <div style="color: white; font-size: 12px; font-weight: 600;">Chart</div>
+                    </div>
+                    <div style="background: rgba(255, 215, 0, 0.08); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: var(--primary-gold); font-size: 11px;">Quality</div>
+                        <div style="color: white; font-size: 12px; font-weight: 600;">95%</div>
+                    </div>
+                    <div style="background: rgba(255, 215, 0, 0.08); padding: 12px; border-radius: 8px; text-align: center;">
+                        <div style="color: var(--primary-gold); font-size: 11px;">Status</div>
+                        <div style="color: white; font-size: 12px; font-weight: 600;">Ready</div>
+                    </div>
+                </div>
+            `;
+            
+            badge.textContent = '95% Confidence';
+            preview.classList.add('show');
+        }
+
+        function showSampleAnalysis(type) {
+            const samples = {
+                chart: {
+                    title: 'Chart Pattern Analysis',
+                    content: `
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📊 Ascending Triangle</h5>
+                            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                                Pattern terdeteksi dengan resistance kuat di Rp 1.320 dan support meningkat.
+                            </p>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">🔍 Key Levels:</h5>
+                            <ul style="color: var(--text-secondary); font-size: 13px; list-style: none;">
+                                <li>• RSI: 58 (neutral)</li>
+                                <li>• MACD: Golden cross</li>
+                                <li>• Volume: 145% avg</li>
+                                <li>• Support: Rp 1.280</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">💡 Signal:</h5>
+                            <p style="color: #10b981; font-weight: 600; font-size: 13px;">
+                                BUY breakout Rp 1.320 • Target Rp 1.380
+                            </p>
+                        </div>
+                    `
+                },
+                financial: {
+                    title: 'Financial Report Analysis',
+                    content: `
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📈 Excellent Health</h5>
+                            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                                Laporan kuartal menunjukkan pertumbuhan solid 18% YoY.
+                            </p>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">💰 Metrics:</h5>
+                            <ul style="color: var(--text-secondary); font-size: 13px; list-style: none;">
+                                <li>• Revenue: +18% YoY</li>
+                                <li>• Margin: 22.5%</li>
+                                <li>• ROE: 19.8%</li>
+                                <li>• Debt: 0.28x</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">🎯 Assessment:</h5>
+                            <p style="color: #10b981; font-weight: 600; font-size: 13px;">
+                                STRONG BUY • Fair value Rp 1,450
+                            </p>
+                        </div>
+                    `
+                },
+                news: {
+                    title: 'News Impact Analysis',
+                    content: `
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📰 Positive Sentiment</h5>
+                            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                                Berita ekspansi digital menciptakan sentimen positif.
+                            </p>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📊 Impact:</h5>
+                            <ul style="color: var(--text-secondary); font-size: 13px; list-style: none;">
+                                <li>• Short-term: +5-8%</li>
+                                <li>• Medium: New revenue</li>
+                                <li>• Long-term: Transformasi</li>
+                                <li>• Risk: Execution</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">💡 Strategy:</h5>
+                            <p style="color: #f59e0b; font-weight: 600; font-size: 13px;">
+                                ACCUMULATE on dips • 3-6m catalyst
+                            </p>
+                        </div>
+                    `
+                },
+                general: {
+                    title: 'Market Data Analysis',
+                    content: `
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📊 Bullish Overview</h5>
+                            <p style="color: var(--text-secondary); font-size: 13px; line-height: 1.6;">
+                                Market breadth positif dengan rotation sehat.
+                            </p>
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">📈 Data:</h5>
+                            <ul style="color: var(--text-secondary); font-size: 13px; list-style: none;">
+                                <li>• Breadth: 75% positive</li>
+                                <li>• Volume: 1.35x avg</li>
+                                <li>• VIX: 16.2 (low)</li>
+                                <li>• Foreign: +Rp 2.1T</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h5 style="color: var(--primary-gold); margin-bottom: 8px;">🎯 Outlook:</h5>
+                            <p style="color: #10b981; font-weight: 600; font-size: 13px;">
+                                BULLISH • Overweight growth stocks
+                            </p>
+                        </div>
+                    `
+                }
+            };
+
+            const preview = document.getElementById('analysisPreview');
+            const content = document.getElementById('previewContent');
+            const badge = document.getElementById('confidenceBadge');
+            
+            content.innerHTML = samples[type].content;
+            badge.textContent = '95% Confidence';
+            
+            preview.classList.add('show');
+            showNotification(`Sample ${samples[type].title} loaded!`, 'info');
+        }
+
+        function analyzePhoto() {
+            if (!uploadedPhoto) {
+                showNotification('Please upload a photo first!', 'error');
+                return;
+            }
+            
+            const analysisType = document.getElementById('photoAnalysisType').value;
+            const resultDiv = document.getElementById('photoResult');
+            
+            resultDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>AI analyzing...<br><small>Processing image</small></div>';
+            
+            setTimeout(() => {
+                const analysis = generatePhotoAnalysis(analysisType);
+                resultDiv.innerHTML = `
+                    <div class="analysis-result">
+                        <h4><i class="fas fa-eye"></i> Gold Photo Analysis</h4>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Type:</strong> ${getPhotoAnalysisTypeName(analysisType)} | 
+                            <strong>Confidence:</strong> ${analysis.confidence}%
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Analysis:</strong><br>
+                            ${analysis.detailedResult}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Insights:</strong><br>
+                            ${analysis.insights}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Signal:</strong><br>
+                            ${analysis.recommendations}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>Risks:</strong><br>
+                            ${analysis.risks}
+                        </div>
+                    </div>
+                `;
+                
+                analysisCount++;
+                updateDashboardStats();
+                saveUserData();
+            }, 2000);
+        }
+
+        function generatePhotoAnalysis(type) {
+            const analyses = {
+                chart: {
+                    confidence: 92,
+                    detailedResult: 'Chart menunjukkan pola ascending triangle dengan resistance kuat di level Rp 1.320. Volume analysis menunjukkan accumulation phase dan momentum indicators memberikan sinyal positif.',
+                    insights: '• Pola triangle merupakan continuation pattern yang bullish<br>• Volume increase menunjukkan smart money involvement<br>• RSI divergence positif memperkuat sinyal bullish<br>• Support zone yang meninggi menunjukkan demand kuat',
+                    recommendations: '• Entry: Buy breakout above Rp 1.320 dengan volume >150% avg<br>• Stop: Rp 1.280 (below recent support)<br>• Target 1: Rp 1.380 (measured move)<br>• Target 2: Rp 1,450 (fib extension)<br>• Size: 70% normal position',
+                    risks: '• False breakout risk: 15-20% probability<br>• Market sentiment risk jika indeks turun<br>• Time decay: Pattern bisa invalid jika terlalu lama<br>• Volume confirmation sangat penting'
+                },
+                financial: {
+                    confidence: 89,
+                    detailedResult: 'Laporan keuangan menunjukkan fundamental sangat kuat dengan pertumbuhan revenue 18% YoY dan margin expansion di semua segmen. Cash flow meningkat 25%.',
+                    insights: '• Revenue growth 18% menunjukkan business momentum kuat<br>• Margin expansion menunjukkan operational efficiency<br>• Strong cash generation mendukung dividen sustainability<br>• Low debt ratio memberikan fleksibilitas growth',
+                    recommendations: '• Strategy: Long-term buy fundamental kuat<br>• Accumulation: DCA pada setiap pullback >5%<br>• Holding: 1-3 tahun untuk maximize value<br>• Allocation: 15-20% pada sektor ini',
+                    risks: '• Ekonomi makro slowdown bisa mempengaruhi growth<br>• Sector-specific risk seperti regulatory changes<br>• Currency risk untuk revenue luar negeri<br>• Competitive pressure dari new entrants'
+                },
+                news: {
+                    confidence: 85,
+                    detailedResult: 'Analisis sentimen menunjukkan reaksi positif terhadap pengumuman ekspansi digital dan partnership strategis. Keyword analysis menunjukkan momentum positif.',
+                    insights: '• Sentimen: 78% positive, 18% neutral, 4% negative<br>• Keyword density fokus pada "growth", "digital", "partnership"<br>• Media coverage luas menciptakan awareness tinggi<br>• Management quotes menunjukkan confidence tinggi',
+                    recommendations: '• Short-term: Buy on news target 5-10% dalam 3-5 hari<br>• Swing: Hold selama momentum positif terjaga<br>• Monitoring: Setup alert untuk development<br>• Volume: Entry saat volume >2x average',
+                    risks: '• News fatigue: Impact cepat memudar tanpa follow-up<br>• Market overreaction: Harga bisa overextended<br>• Expectation vs reality: Execution risk<br>• Timing: Entry lambat menyebabkan buying at peak'
+                },
+                general: {
+                    confidence: 82,
+                    detailedResult: 'Data market menunjukkan kondisi bullish dengan breadth positif dan sector rotation sehat. Volatility index rendah menunjukkan market comfort.',
+                    insights: '• Market breadth 75% positive menunjukkan broad-based rally<br>• Sector rotation sehat antara growth dan value<br>• Foreign investor net buy 5 hari berturut-turut<br>• Low VIX menunjukkan reduced fear dan stability',
+                    recommendations: '• Approach: Overweight growth stocks fundamental kuat<br>• Allocation: Focus tech, finance, consumer discretionary<br>• Risk management: Trailing stop untuk protect profit<br>• Diversification: 15-20 stocks untuk reduce concentration',
+                    risks: '• Market correction jika breadth memburuk tiba-tiba<br>• External shock: Geopolitical atau economic data negative<br>• Sector rotation terlalu cepat menghitung strategy<br>• Liquidity risk pada market stress conditions'
+                }
+            };
+            
+            return analyses[type];
+        }
+
+        function getPhotoAnalysisTypeName(type) {
+            const names = {
+                chart: 'Chart Pattern',
+                financial: 'Financial Report',
+                news: 'News Article',
+                general: 'Market Data'
+            };
+            return names[type];
+        }
+
+        // Chat consultation - Compact version
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addChatMessage(message, 'user');
+            input.value = '';
+            
+            // Simulate AI response
+            setTimeout(() => {
+                const response = generateAIResponse(message);
+                addChatMessage(response, 'ai');
+                consultationCount++;
+                updateDashboardStats();
+                saveUserData();
+            }, 500 + Math.random() * 1000);
+        }
+
+        function addChatMessage(message, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${sender}`;
+            
+            if (sender === 'user') {
+                messageDiv.innerHTML = `<strong>You:</strong> ${message}`;
+            } else {
+                messageDiv.innerHTML = `<strong>Gold AI:</strong> ${message}`;
+            }
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Save to history (keep only last 20 messages)
+            chatHistory.push({ sender, message, timestamp: new Date() });
+            if (chatHistory.length > 20) chatHistory.shift();
+        }
+
+        function handleChatKeypress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function generateAIResponse(message) {
+            const responses = [
+                `Gold AI analyzing "${message}"... Based on multi-dimensional analysis, I recommend evaluating fundamental strength, technical momentum, and current market structure. The setup suggests optimal entry timing.`,
+                `Excellent question about ${message}. From my gold-standard analysis, considering market dynamics, earnings momentum, and support/resistance levels, the current configuration indicates...`,
+                `Analyzing ${message} with premium AI models... Multiple timeframe analysis shows correlation with major indices and sector rotation patterns. Risk-reward setup favors quality positions.`,
+                `Gold AI processing "${message}"... Looking at broader market context, institutional flow, and volatility metrics, I suggest focusing on stocks with strong balance sheets and consistent momentum.`,
+                `Your inquiry about ${message} requires multi-factor analysis. My AI models considering macro data, sector trends, and individual fundamentals show optimal strategy would be...`
+            ];
+            
+            return responses[Math.floor(Math.random() * responses.length)];
+        }
+
+        // API Keys management with Auto-Save
+        function saveApiKey(service) {
+            const keyInputs = {
+                openai: 'openaiKey',
+                gemini: 'geminiKey',
+                grok: 'grokKey',
+                deepseek: 'deepseekKey',
+                kimi: 'kimiKey',
+                custom: 'customApiKey'
+            };
+            
+            const keyNameInputs = {
+                custom: 'customApiName'
+            };
+            
+            const inputId = keyInputs[service];
+            const keyInput = document.getElementById(inputId);
+            const keyNameInput = keyNameInputs[service] ? document.getElementById(keyNameInputs[service]) : null;
+            
+            if (!keyInput.value.trim()) {
+                showNotification('Please enter API key!', 'error');
+                return;
+            }
+            
+            if (service === 'custom' && (!keyNameInput || !keyNameInput.value.trim())) {
+                showNotification('Please enter API name!', 'error');
+                return;
+            }
+            
+            // Save to local variable
+            if (service === 'custom') {
+                apiKeys[service] = {
+                    name: keyNameInput.value.trim(),
+                    key: keyInput.value.trim()
+                };
+            } else {
+                apiKeys[service] = keyInput.value.trim();
+            }
+            
+            // Auto-save to localStorage
+            localStorage.setItem('apiKeys', JSON.stringify(apiKeys));
+            
+            showNotification(`${service.toUpperCase()} API key saved & auto-saved!`, 'success');
+            updateDashboardStats();
+            
+            // Clear input after save
+            keyInput.value = '';
+            if (keyNameInput) keyNameInput.value = '';
+        }
+
+        function loadSavedApiKeys() {
+            const savedKeys = localStorage.getItem('apiKeys');
+            if (savedKeys) {
+                apiKeys = JSON.parse(savedKeys);
+                
+                // Populate input fields with saved keys
+                const keyMap = {
+                    'openai': 'openaiKey',
+                    'gemini': 'geminiKey',
+                    'grok': 'grokKey',
+                    'deepseek': 'deepseekKey',
+                    'kimi': 'kimiKey'
+                };
+                
+                Object.keys(keyMap).forEach(service => {
+                    if (apiKeys[service]) {
+                        document.getElementById(keyMap[service]).placeholder = '✓ Auto-saved';
+                        document.getElementById(keyMap[service]).style.color = '#10b981';
+                    }
+                });
+                
+                if (apiKeys['custom']) {
+                    document.getElementById('customApiKey').placeholder = '✓ Auto-saved';
+                    document.getElementById('customApiKey').style.color = '#10b981';
+                    document.getElementById('customApiName').placeholder = apiKeys['custom'].name;
+                    document.getElementById('customApiName').style.color = '#10b981';
+                }
+            }
+        }
+
+        function testAllApiKeys() {
+            const totalKeys = Object.keys(apiKeys).length;
+            if (totalKeys === 0) {
+                showNotification('No API keys to test!', 'error');
+                return;
+            }
+            
+            showNotification('Testing all APIs...', 'info');
+            
+            setTimeout(() => {
+                const workingKeys = Math.floor(totalKeys * 0.9);
+                
+                // Simulate API testing results
+                let testResults = [];
+                Object.keys(apiKeys).forEach(service => {
+                    const isWorking = Math.random() > 0.1; // 90% success rate
+                    testResults.push({
+                        service: service,
+                        status: isWorking ? '✓ Active' : '✗ Failed',
+                        color: isWorking ? '#10b981' : '#ef4444'
+                    });
+                });
+                
+                showNotification(`API Test Complete: ${workingKeys}/${totalKeys} active`, 'success');
+            }, 1500);
+        }
+
+        // Recommendations
+        function getRecommendations() {
+            const type = document.getElementById('recommendationType').value;
+            const notificationEnabled = document.getElementById('notificationToggle').checked;
+            const resultDiv = document.getElementById('recommendationResult');
+            
+            resultDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i><br>Generating signals...<br><small>AI analyzing market data</small></div>';
+            
+            setTimeout(() => {
+                const recommendations = generateRecommendations(type);
+                resultDiv.innerHTML = `
+                    <div class="analysis-result">
+                        <h4><i class="fas fa-star"></i> Gold ${getRecommendationTypeName(type)} Signals</h4>
+                        <div style="margin-bottom: 15px;">
+                            <strong>Type:</strong> ${getRecommendationTypeName(type)} | 
+                            <strong>Market:</strong> Bullish selective
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>🏆 Top Picks:</strong><br>
+                            ${recommendations.topPicks.map(stock => `• ${stock}`).join('<br>')}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>📋 Rationale:</strong><br>
+                            ${recommendations.reasons}
+                        </div>
+                        <div style="margin-bottom: 15px;">
+                            <strong>🎯 Strategy:</strong><br>
+                            ${recommendations.strategy}
+                        </div>
+                        <div style="margin-bottom: 10px;">
+                            <strong>⚠️ Risk:</strong> ${recommendations.riskLevel}
+                        </div>
+                        ${notificationEnabled ? '<div style="margin-top: 15px; color: #10b981; background: rgba(16, 185, 129, 0.1); padding: 12px; border-radius: 8px; border: 1px solid rgba(16, 185, 129, 0.3); font-size: 12px;"><i class="fas fa-bell"></i> Notifications enabled</div>' : ''}
+                    </div>
+                `;
+                
+                if (notificationEnabled) {
+                    showNotification('Trading signals notifications enabled!', 'success');
+                }
+            }, 2000);
+        }
+
+        function generateRecommendations(type) {
+            const recommendations = {
+                daily: {
+                    topPicks: ['BBCA (BUY)', 'TLKM (HOLD)', 'UNVR (BUY)', 'ASII (HOLD)', 'BBRI (BUY)'],
+                    reasons: 'Based on momentum, volume analysis, and news flow. Focus on stocks with above-average volume and positive sentiment.',
+                    strategy: 'Day trading with tight stops at 2-3%. Target quick gains 3-5%. Monitor volume spikes and news. Close all by market close.',
+                    riskLevel: 'High - Intraday volatility'
+                },
+                weekly: {
+                    topPicks: ['BBCA (BUY)', 'TLKM (BUY)', 'UNVR (HOLD)', 'ASII (BUY)', 'BBRI (BUY)'],
+                    reasons: 'Weekly outlook based on chart patterns, momentum, and sector trends. Focus on stocks with strong technicals and fundamental support.',
+                    strategy: 'Swing trade 1-2 weeks. Set stops 5-7% below entry. Target 8-15% gains. Monitor weekly patterns for optimal timing.',
+                    riskLevel: 'Medium - Multi-day exposure'
+                },
+                monthly: {
+                    topPicks: ['BBCA (BUY)', 'TLKM (BUY)', 'UNVR (BUY)', 'ASII (HOLD)', 'BBRI (BUY)'],
+                    reasons: 'Monthly horizon focusing on fundamental strength, earnings visibility, and macro trends. Select quality companies with proven track records.',
+                    strategy: 'Position trade 1-3 months. Use DCA for entry. Set stops 10-12%. Target 15-25% returns with fundamental catalysts.',
+                    riskLevel: 'Medium-Low - Fundamental focus'
+                },
+                swing: {
+                    topPicks: ['BBCA (BUY)', 'TLKM (SELL)', 'UNVR (HOLD)', 'ASII (BUY)', 'BBRI (BUY)'],
+                    reasons: 'Swing opportunities through chart patterns, support/resistance, and momentum. Focus on clear entry/exit levels with 5-15% potential.',
+                    strategy: 'Hold 3-10 trading days. Enter at support with volume confirmation. Exit at resistance or reversal. Target 10-20% per swing.',
+                    riskLevel: 'High - Pattern risk'
+                },
+                longterm: {
+                    topPicks: ['BBCA (BUY)', 'TLKM (BUY)', 'UNVR (BUY)', 'ASII (HOLD)', 'BBRI (BUY)'],
+                    reasons: 'Long-term wealth building through quality companies with sustainable growth and competitive advantages. Focus on blue-chips with dividend history.',
+                    strategy: 'Buy-and-hold 1-3 years. Use corrections as accumulation. Reinvest dividends. Quarterly rebalancing. Target 20-30% annually.',
+                    riskLevel: 'Low - Quality focus'
+                }
+            };
+            
+            return recommendations[type];
+        }
+
+        function getRecommendationTypeName(type) {
+            const names = {
+                daily: 'Daily Signals',
+                weekly: 'Weekly Outlook',
+                monthly: 'Monthly Investment',
+                swing: 'Swing Signals',
+                longterm: 'Long-term'
+            };
+            return names[type];
+        }
+
+        // Utility functions
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('totalAnalysis').textContent = analysisCount;
+            document.getElementById('totalConsultation').textContent = consultationCount;
+            document.getElementById('totalApiKeys').textContent = Object.keys(apiKeys).length;
+            document.getElementById('activeRecommendations').textContent = Math.floor(Math.random() * 10) + 3;
+        }
+
+        // Data persistence
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            const userData = {
+                username: currentUser,
+                level: userLevel,
+                apiKeys: apiKeys,
+                analysisCount: analysisCount,
+                consultationCount: consultationCount,
+                chatHistory: chatHistory,
+                lastLogin: new Date().toISOString()
+            };
+            
+            localStorage.setItem(`userData_${currentUser}`, JSON.stringify(userData));
+        }
+
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            const savedData = localStorage.getItem(`userData_${currentUser}`);
+            if (savedData) {
+                const userData = JSON.parse(savedData);
+                apiKeys = userData.apiKeys || {};
+                analysisCount = userData.analysisCount || 0;
+                consultationCount = userData.consultationCount || 0;
+                chatHistory = userData.chatHistory || [];
+                
+                updateDashboardStats();
+                
+                // Restore chat history (keep only last 15 messages)
+                if (chatHistory.length > 0) {
+                    const chatMessages = document.getElementById('chatMessages');
+                    chatMessages.innerHTML = '<div class="chat-message ai"><strong>Gold AI:</strong> Halo! Saya asisten AI premium. Tanya apa saja tentang saham atau trading.</div>';
+                    
+                    chatHistory.slice(-15).forEach(msg => {
+                        addChatMessage(msg.message, msg.sender);
+                    });
+                }
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check for saved login session
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                const userData = JSON.parse(localStorage.getItem(`userData_${savedUser}`));
+                if (userData) {
+                    currentUser = userData.username;
+                    userLevel = userData.level;
+                    loginSuccess(currentUser, userLevel);
+                }
+            }
+        });
+
+        // Auto-save session
+        window.addEventListener('beforeunload', function() {
+            if (currentUser) {
+                localStorage.setItem('currentUser', currentUser);
+                saveUserData();
+            }
+        });
+    </script>
+</body>
+</html>
